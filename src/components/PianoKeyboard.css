@@ -1,0 +1,75 @@
+/* Piano container - properly centered */
+.piano {
+  position: relative;
+  display: block;
+  width: fit-content;
+  height: 200px;
+  /* Remove 'auto' to fix the override */
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-left: -50px; /* This will now work */
+  padding: 20px;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.key {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.key.white {
+  width: 40px;
+  height: 160px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-right: 1px solid #ccc; /* Add right border for consistency */
+  border-radius: 0 0 8px 8px;
+  z-index: 1;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.key.black {
+  width: 30px;
+  height: 100px;
+  background-color: #333;
+  border: 1px solid #222;
+  border-radius: 0 0 6px 6px;
+  z-index: 2;
+  top: 0;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+
+/* Highlighted state */
+.key.highlight {
+  background-color: #ffeb3b !important;
+  box-shadow: 0 0 15px rgba(255, 235, 59, 0.8);
+  transform: scale(1.05);
+}
+
+.key.black.highlight {
+  background-color: #ff9800 !important;
+  box-shadow: 0 0 15px rgba(255, 152, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.key-label {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  pointer-events: none; /* Prevent label from interfering with clicks */
+}
+
+.black-key-label {
+  color: white;
+  font-size: 10px;
+  bottom: 8px;
+}
