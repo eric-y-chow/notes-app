@@ -12,9 +12,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "lucide-react": "^0.542.0",
     "pitchy": "^4.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "tone": "^15.1.22",
     "vexflow": "^5.0.0"
   },
   "devDependencies": {

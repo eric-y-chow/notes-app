@@ -1,9 +1,112 @@
+/* App.css */
 .App {
-  width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
 }
 
-.App-header {
-  width: 100%;
-  height: 100%;
+/* Navigation Styles */
+.app-navigation {
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.app-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(75, 85, 99, 0.5);
+  color: #d1d5db;
+  border: 1px solid transparent;
+}
+
+.nav-button:hover {
+  background: rgba(75, 85, 99, 0.8);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.nav-button.active {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: white;
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
+}
+
+.nav-button.active:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+}
+
+/* Main Content */
+.app-main {
+  min-height: calc(100vh - 80px); /* Adjust based on nav height */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    text-align: center;
+    padding: 0 1rem;
+  }
+  
+  .nav-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .nav-button {
+    flex: 1;
+    min-width: 140px;
+  }
+  
+  .app-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-buttons {
+    flex-direction: column;
+  }
+  
+  .nav-button {
+    width: 100%;
+  }
 }
