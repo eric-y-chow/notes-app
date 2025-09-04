@@ -31,5 +31,5 @@
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"
   },
-  "homepage": "https://eric-y-chow.github.io/notes-app/"
+  "homepage": "https://eric-y-chow.github.io/notes-app"
 }
