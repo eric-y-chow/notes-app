@@ -174,6 +174,7 @@ const DoubleBass = ({ note }) => {
             />
           );
         })}
+          
         
         {/* Fingering position indicator */}
         {currentFingering && (
