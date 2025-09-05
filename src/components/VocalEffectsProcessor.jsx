@@ -303,6 +303,98 @@ const VocalEffectsProcessor = () => {
             </div>
           </div>
 
+          {/* Harmony */}
+          <div className="bg-gray-800 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Harmony</h3>
+              <button
+                onClick={() => toggleEffect('harmony')}
+                className={`px-3 py-1 rounded text-sm transition-colors ${
+                  effects.harmony.enabled ? 'bg-green-600 text-white' : 'bg-gray-600 text-gray-300'
+                }`}
+              >
+                {effects.harmony.enabled ? 'ON' : 'OFF'}
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">Harmony Type</label>
+                <select
+                  value={effects.harmony.type}
+                  onChange={(e) => updateEffect('harmony', 'type', e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-800/60 text-white rounded-lg border border-gray-600/50 focus:border-green-400 focus:outline-none focus:ring-2 focus:ring-green-400/20 backdrop-blur-sm transition-all duration-200"
+                >
+                  <option value="thirds">Major Thirds (3rd, 5th, 8ve)</option>
+                  <option value="fifths">Perfect Fifths (5th, 8ve, 12th)</option>
+                  <option value="octaves">Octaves (8ve, 15ma, 22nd)</option>
+                  <option value="custom">Custom Intervals</option>
+                </select>
+              </div>
+              
+              {effects.harmony.type === 'custom' && (
+                <>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">
+                      Voice 1: +{effects.harmony.voice1} semitones
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="24"
+                      step="1"
+                      value={effects.harmony.voice1}
+                      onChange={(e) => updateEffect('harmony', 'voice1', parseInt(e.target.value))}
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">
+                      Voice 2: +{effects.harmony.voice2} semitones
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="24"
+                      step="1"
+                      value={effects.harmony.voice2}
+                      onChange={(e) => updateEffect('harmony', 'voice2', parseInt(e.target.value))}
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">
+                      Voice 3: +{effects.harmony.voice3} semitones
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="24"
+                      step="1"
+                      value={effects.harmony.voice3}
+                      onChange={(e) => updateEffect('harmony', 'voice3', parseInt(e.target.value))}
+                      className="w-full"
+                    />
+                  </div>
+                </>
+              )}
+              
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">
+                  Harmony Mix: {(effects.harmony.mix * 100).toFixed(0)}%
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={effects.harmony.mix}
+                  onChange={(e) => updateEffect('harmony', 'mix', parseFloat(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Reverb */}
           <div className="bg-gray-800 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
