@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import NoteDetector from './components/NoteDetector';
+import NoteDetectorGame from './components/NoteDetectorGame';
 import VocalEffectsProcessor from './components/VocalEffectsProcessor';
 import './App.css'; // Optional styling
 
@@ -10,6 +11,8 @@ function App() {
     switch (activeComponent) {
       case 'noteDetector':
         return <NoteDetector />;
+      case 'noteDetectorGame':
+        return <NoteDetectorGame />;
       case 'vocalEffects':
         return <VocalEffectsProcessor />;
       default:
@@ -29,6 +32,12 @@ function App() {
               className={`nav-button ${activeComponent === 'noteDetector' ? 'active' : ''}`}
             >
               🎵 Note Detector
+            </button>
+            <button
+              onClick={() => setActiveComponent('noteDetectorGame')}
+              className={`nav-button ${activeComponent === 'noteDetectorGame' ? 'active' : ''}`}
+            >
+              🎵 Note Detector Game
             </button>
             <button
               onClick={() => setActiveComponent('vocalEffects')}
