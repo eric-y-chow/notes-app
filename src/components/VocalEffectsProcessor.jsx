@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Mic, MicOff, Volume2, VolumeX, Settings, Play, Square } from 'lucide-react';
+import { Mic, MicOff, Volume2, VolumeX, Play, Square } from 'lucide-react';
 import * as Tone from 'tone';
 
 const VocalEffectsProcessor = () => {
@@ -10,8 +10,8 @@ const VocalEffectsProcessor = () => {
     reverb: { enabled: false, roomSize: 0.5, wetness: 0.3 },
     chorus: { enabled: false, frequency: 1.5, depth: 0.5, wetness: 0.3 },
     autotune: { enabled: false, baseFrequency: 440, correction: 0.8 },
-    harmony: { enabled: false, interval: 7, mix: 0.4 }, // 7 = perfect fifth
-    pitch: { enabled: false, shift: 0 }, // semitones
+    harmony: { enabled: false, type: 'thirds', mix: 0.4, voice1: 4, voice2: 7, voice3: 12 },
+    pitch: { enabled: false, shift: 0 },
     distortion: { enabled: false, amount: 0.4 },
     delay: { enabled: false, time: 0.25, feedback: 0.3, mix: 0.2 }
   });
@@ -21,52 +21,31 @@ const VocalEffectsProcessor = () => {
   const effectsChainRef = useRef({});
   const outputRef = useRef(null);
   const analyserRef = useRef(null);
-  const pitchShifterRef = useRef(null);
   const frequencyDataRef = useRef(null);
+  const harmonyNodesRef = useRef([]);
 
   // Initialize audio context and effects
   const initializeAudio = useCallback(async () => {
     try {
       await Tone.start();
-      
-      // Create microphone input
+
       micRef.current = new Tone.UserMedia();
-      
-      // Create effects
+
       effectsChainRef.current = {
-        reverb: new Tone.Reverb({
-          roomSize: effects.reverb.roomSize,
-          wet: effects.reverb.wetness
-        }),
-        chorus: new Tone.Chorus({
-          frequency: effects.chorus.frequency,
-          depth: effects.chorus.depth,
-          wet: effects.chorus.wetness
-        }),
-        pitchShift: new Tone.PitchShift({
-          pitch: effects.pitch.shift
-        }),
-        distortion: new Tone.Distortion({
-          distortion: effects.distortion.amount,
-          wet: effects.distortion.enabled ? 1 : 0
-        }),
-        delay: new Tone.FeedbackDelay({
-          delayTime: effects.delay.time,
-          feedback: effects.delay.feedback,
-          wet: effects.delay.mix
-        }),
+        reverb: new Tone.Reverb({ roomSize: effects.reverb.roomSize, wet: effects.reverb.wetness }),
+        chorus: new Tone.Chorus({ frequency: effects.chorus.frequency, depth: effects.chorus.depth, wet: effects.chorus.wetness }),
+        pitchShift: new Tone.PitchShift({ pitch: effects.pitch.shift }),
+        distortion: new Tone.Distortion({ distortion: effects.distortion.amount, wet: effects.distortion.enabled ? 1 : 0 }),
+        delay: new Tone.FeedbackDelay({ delayTime: effects.delay.time, feedback: effects.delay.feedback, wet: effects.delay.mix }),
         filter: new Tone.Filter(800, 'highpass'),
         compressor: new Tone.Compressor(-30, 3)
       };
 
-      // Create analyzer for visualization
       analyserRef.current = new Tone.Analyser('fft', 256);
       frequencyDataRef.current = new Float32Array(256);
 
-      // Create output gain
       outputRef.current = new Tone.Gain(1);
 
-      // Connect initial chain (dry signal)
       micRef.current.connect(effectsChainRef.current.compressor);
       effectsChainRef.current.compressor.connect(analyserRef.current);
       analyserRef.current.connect(outputRef.current);
@@ -79,32 +58,61 @@ const VocalEffectsProcessor = () => {
     }
   }, []);
 
+  // Harmony handling
+  useEffect(() => {
+    if (!micRef.current) return;
+
+    // Clean up old harmony nodes
+    harmonyNodesRef.current.forEach(node => node.dispose());
+    harmonyNodesRef.current = [];
+
+    if (effects.harmony.enabled) {
+      let intervals = [];
+      if (effects.harmony.type === 'thirds') intervals = [4, 7];
+      else if (effects.harmony.type === 'fifths') intervals = [7, 12];
+      else if (effects.harmony.type === 'octaves') intervals = [12];
+      else if (effects.harmony.type === 'custom')
+        intervals = [effects.harmony.voice1, effects.harmony.voice2, effects.harmony.voice3];
+
+      const voices = [];
+      intervals.forEach(interval => {
+        if (!interval || interval === 0) return;
+        const shifter = new Tone.PitchShift(interval).toDestination();
+        shifter.wet.value = effects.harmony.mix;
+        micRef.current.connect(shifter);
+        voices.push(shifter);
+      });
+
+      harmonyNodesRef.current = voices;
+    }
+
+    return () => {
+      harmonyNodesRef.current.forEach(node => node.dispose());
+      harmonyNodesRef.current = [];
+    };
+  }, [effects.harmony, micRef.current]);
+
   // Update effects chain based on current settings
   const updateEffectsChain = useCallback(() => {
     if (!micRef.current || !effectsChainRef.current || !outputRef.current) return;
 
     try {
-      // Disconnect everything
       micRef.current.disconnect();
       Object.values(effectsChainRef.current).forEach(effect => effect.disconnect());
       analyserRef.current?.disconnect();
       outputRef.current.disconnect();
 
-      // Rebuild chain based on enabled effects
       let currentNode = micRef.current;
-      
-      // Always start with compressor for clean signal
+
       currentNode.connect(effectsChainRef.current.compressor);
       currentNode = effectsChainRef.current.compressor;
 
-      // Add pitch shift if enabled
       if (effects.pitch.enabled && effects.pitch.shift !== 0) {
         effectsChainRef.current.pitchShift.pitch = effects.pitch.shift;
         currentNode.connect(effectsChainRef.current.pitchShift);
         currentNode = effectsChainRef.current.pitchShift;
       }
 
-      // Add distortion if enabled
       if (effects.distortion.enabled) {
         effectsChainRef.current.distortion.wet.value = 1;
         effectsChainRef.current.distortion.distortion = effects.distortion.amount;
@@ -114,7 +122,6 @@ const VocalEffectsProcessor = () => {
         effectsChainRef.current.distortion.wet.value = 0;
       }
 
-      // Add chorus if enabled
       if (effects.chorus.enabled) {
         effectsChainRef.current.chorus.wet.value = effects.chorus.wetness;
         effectsChainRef.current.chorus.frequency.value = effects.chorus.frequency;
@@ -125,7 +132,6 @@ const VocalEffectsProcessor = () => {
         effectsChainRef.current.chorus.wet.value = 0;
       }
 
-      // Add reverb if enabled
       if (effects.reverb.enabled) {
         effectsChainRef.current.reverb.wet.value = effects.reverb.wetness;
         currentNode.connect(effectsChainRef.current.reverb);
@@ -134,7 +140,6 @@ const VocalEffectsProcessor = () => {
         effectsChainRef.current.reverb.wet.value = 0;
       }
 
-      // Add delay if enabled
       if (effects.delay.enabled) {
         effectsChainRef.current.delay.wet.value = effects.delay.mix;
         effectsChainRef.current.delay.delayTime.value = effects.delay.time;
@@ -145,20 +150,16 @@ const VocalEffectsProcessor = () => {
         effectsChainRef.current.delay.wet.value = 0;
       }
 
-      // Connect to analyzer and output
       currentNode.connect(analyserRef.current);
       analyserRef.current.connect(outputRef.current);
-      
-      // Control output volume
+
       outputRef.current.gain.value = isMuted ? 0 : 1;
       outputRef.current.toDestination();
-
     } catch (error) {
       console.error('Error updating effects chain:', error);
     }
   }, [effects, isMuted]);
 
-  // Start/stop processing
   const toggleProcessing = async () => {
     if (!isActive) {
       try {
@@ -175,9 +176,9 @@ const VocalEffectsProcessor = () => {
       }
     } else {
       try {
-        if (micRef.current) {
-          micRef.current.close();
-        }
+        harmonyNodesRef.current.forEach(node => node.dispose());
+        harmonyNodesRef.current = [];
+        if (micRef.current) micRef.current.close();
         setIsActive(false);
       } catch (error) {
         console.error('Error stopping processing:', error);
@@ -185,11 +186,8 @@ const VocalEffectsProcessor = () => {
     }
   };
 
-  // Update effects when settings change
   useEffect(() => {
-    if (isActive) {
-      updateEffectsChain();
-    }
+    if (isActive) updateEffectsChain();
   }, [effects, isActive, updateEffectsChain]);
 
   const updateEffect = (effectName, param, value) => {
