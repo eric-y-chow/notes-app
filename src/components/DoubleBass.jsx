@@ -15,10 +15,10 @@ const DoubleBass = ({ note }) => {
         { fret: 2, note: 'F#1', finger: '2' },
         { fret: 3, note: 'G1', finger: '3' },
         { fret: 4, note: 'G#1', finger: '4' },
-        { fret: 5, note: 'A1', finger: '1' },
-        { fret: 6, note: 'A#1', finger: '2' },
-        { fret: 7, note: 'B1', finger: '3' },
-        { fret: 8, note: 'C2', finger: '4' }
+        // { fret: 5, note: 'A1', finger: '1' },
+        // { fret: 6, note: 'A#1', finger: '2' },
+        // { fret: 7, note: 'B1', finger: '3' },
+        // { fret: 8, note: 'C2', finger: '4' }
       ]
     },
     { 
@@ -32,11 +32,11 @@ const DoubleBass = ({ note }) => {
         { fret: 1, note: 'A#1', finger: '1' },
         { fret: 2, note: 'B1', finger: '2' },
         { fret: 3, note: 'C2', finger: '3' },
-        { fret: 4, note: 'C#2', finger: '4' },
-        { fret: 5, note: 'D2', finger: '1' },
-        { fret: 6, note: 'D#2', finger: '2' },
-        { fret: 7, note: 'E2', finger: '3' },
-        { fret: 8, note: 'F2', finger: '4' }
+        // { fret: 4, note: 'C#2', finger: '4' },
+        // { fret: 5, note: 'D2', finger: '1' },
+        // { fret: 6, note: 'D#2', finger: '2' },
+        // { fret: 7, note: 'E2', finger: '3' },
+        // { fret: 8, note: 'F2', finger: '4' }
       ]
     },
     { 
@@ -50,11 +50,11 @@ const DoubleBass = ({ note }) => {
         { fret: 1, note: 'D#2', finger: '1' },
         { fret: 2, note: 'E2', finger: '2' },
         { fret: 3, note: 'F2', finger: '3' },
-        { fret: 4, note: 'F#2', finger: '4' },
-        { fret: 5, note: 'G2', finger: '1' },
-        { fret: 6, note: 'G#2', finger: '2' },
-        { fret: 7, note: 'A2', finger: '3' },
-        { fret: 8, note: 'A#2', finger: '4' }
+        // { fret: 4, note: 'F#2', finger: '4' },
+        // { fret: 5, note: 'G2', finger: '1' },
+        // { fret: 6, note: 'G#2', finger: '2' },
+        // { fret: 7, note: 'A2', finger: '3' },
+        // { fret: 8, note: 'A#2', finger: '4' }
       ]
     },
     { 
